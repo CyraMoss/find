@@ -16,6 +16,7 @@ import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 
 import HeaderComponent from './components/Header';
+import SearchBar from './components/SearchBar';
 
 export default function App() {
   const [region, setRegion] = useState(null); // set initial region to null
@@ -27,11 +28,6 @@ export default function App() {
   const [showClearIcon, setShowClearIcon] = useState(false);
 
   const [selectedBarCoordinate, setSelectedBarCoordinate] = useState(null);
-
-  const handleSearchIconPress = () => {
-    setShowSearchBar(true); // show the search bar
-    setShowClearIcon(true); // show search icon or x icon
-  };
 
   const handleSearchBarCancel = () => {
     setShowSearchBar(false); // hide the search bar
@@ -81,19 +77,26 @@ export default function App() {
       <View>
         <HeaderComponent
           showSearchBar={showSearchBar}
-          handleSearchIconPress={handleSearchIconPress}
-          searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          handleSearchBarCancel={handleSearchBarCancel}
-          setSuggestions={setSuggestions}
-          suggestions={suggestions}
           setSearchTerm={setSearchTerm}
-          searchTerm={searchTerm}
-          setSelectedBarCoordinate={setSelectedBarCoordinate}
           setShowSearchBar={setShowSearchBar}
           setShowClearIcon={setShowClearIcon}
-          setBars={setBars}
         />
+        {showSearchBar && (
+          <View style={styles.searchBarContainer}>
+            <SearchBar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              handleSearchBarCancel={handleSearchBarCancel}
+              setSearchTerm={setSearchTerm}
+              searchTerm={searchTerm}
+              setSuggestions={setSuggestions}
+              suggestions={suggestions}
+              setSelectedBarCoordinate={setSelectedBarCoordinate}
+              setBars={setBars}
+            />
+          </View>
+        )}
       </View>
       <MapView style={styles.map} region={selectedBarCoordinate || region}>
         <Marker

@@ -1,32 +1,14 @@
-import {
-  View,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import { View, StatusBar, StyleSheet } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import React, { useEffect } from 'react';
-import Autocomplete from 'react-native-autocomplete-input';
-
-import SearchBar from './SearchBar';
 
 export default function HeaderComponent(props) {
   const {
     showSearchBar,
-    handleSearchIconPress,
     setShowClearIcon,
     setShowSearchBar,
-    searchQuery,
-    setSearchQuery,
-    handleSearchBarCancel,
-    handleSearch,
-    setSuggestions,
-    suggestions,
-    searchTerm,
     setSearchTerm,
-    setSelectedBarCoordinate,
-    setBars,
+    setSearchQuery,
   } = props;
 
   const handleClearIconPress = () => {
@@ -34,6 +16,11 @@ export default function HeaderComponent(props) {
     setSearchTerm('');
     setShowClearIcon(false);
     setShowSearchBar(false);
+  };
+
+  const handleSearchIconPress = () => {
+    setShowSearchBar(true); // show the search bar
+    setShowClearIcon(true); // show search icon or x icon
   };
 
   return (
@@ -67,23 +54,6 @@ export default function HeaderComponent(props) {
           </>
         }
       />
-
-      {showSearchBar && (
-        <View style={styles.searchBarContainer}>
-          <SearchBar
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            handleSearch={handleSearch}
-            handleSearchBarCancel={handleSearchBarCancel}
-            setSearchTerm={setSearchTerm}
-            searchTerm={searchTerm}
-            setSuggestions={setSuggestions}
-            suggestions={suggestions}
-            setSelectedBarCoordinate={setSelectedBarCoordinate}
-            setBars={setBars}
-          />
-        </View>
-      )}
     </View>
   );
 }
@@ -95,13 +65,5 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: '#f4511e',
     justifyContent: 'space-around',
-  },
-  searchBarContainer: {
-    backgroundColor: '#fff',
-    height: 100,
-  },
-  searchBarInputContainer: {
-    backgroundColor: 'purple',
-    borderRadius: 5,
   },
 });

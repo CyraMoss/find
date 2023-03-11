@@ -87,8 +87,10 @@ export default function SearchBar(props) {
 const styles = {
   searchBarContainer: {
     backgroundColor: '#fff',
+    height: 100,
   },
   searchBarInput: {
     borderBottomWidth: 0,
+    borderRadius: 5,
   },
 };
