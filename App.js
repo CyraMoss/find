@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, StatusBar } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  StatusBar,
+  TouchableOpacity,
+  Text,
+} from 'react-native';
 import { Header, Icon, Input } from 'react-native-elements';
+import Autocomplete from 'react-native-autocomplete-input';
+import { Feather } from '@expo/vector-icons';
+
 import MapView, { Marker } from 'react-native-maps';
 import * as Permissions from 'expo-permissions';
 
@@ -12,11 +21,14 @@ export default function App() {
   const [showSearchBar, setShowSearchBar] = useState(false); // add state for search bar visibility
   const [searchQuery, setSearchQuery] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [showClearIcon, setShowClearIcon] = useState(false);
 
   const [selectedBarCoordinate, setSelectedBarCoordinate] = useState(null);
 
   const handleSearchIconPress = () => {
     setShowSearchBar(true); // show the search bar
+    setShowClearIcon(true); // show search icon or x icon
   };
 
   const handleSearchBarCancel = () => {
@@ -38,6 +50,13 @@ export default function App() {
         }
       })
       .catch((error) => console.error(error));
+  };
+
+  const handleClearIconPress = () => {
+    setSearchQuery('');
+    setSearchTerm('');
+    setShowClearIcon(false);
+    setShowSearchBar(false);
   };
 
   useEffect(() => {
@@ -63,6 +82,17 @@ export default function App() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (searchTerm) {
+      fetch(`http://192.168.1.108:3001/api/bars?q=${searchTerm}`)
+        .then((response) => response.json())
+        .then((data) => setSuggestions(data))
+        .catch((error) => console.error(error));
+    } else {
+      setSuggestions([]);
+    }
+  }, [searchTerm]);
+
   // render the map only after the region state is set
   if (!region) {
     return null;
@@ -79,27 +109,59 @@ export default function App() {
             style: { color: '#fff' },
           }}
           rightComponent={
-            <Icon name="search" color="#fff" onPress={handleSearchIconPress} />
+            <>
+              {showSearchBar ? (
+                <Icon
+                  name="x"
+                  type="feather"
+                  color="#fff"
+                  onPress={handleClearIconPress}
+                />
+              ) : (
+                <Icon
+                  name="search"
+                  color="#fff"
+                  onPress={handleSearchIconPress}
+                />
+              )}
+            </>
           }
         />
         {showSearchBar && (
           <View style={styles.searchBarContainer}>
-            <Input
+            <Autocomplete
               placeholder="Search for your next drink spot!"
               value={searchQuery}
-              onChangeText={setSearchQuery}
+              onChangeText={(text) => {
+                setSearchQuery(text);
+                setSearchTerm(text);
+              }}
               onSubmitEditing={handleSearch}
               autoFocus={true}
               containerStyle={styles.searchBarInputContainer}
               inputContainerStyle={styles.searchBarInput}
-              leftIcon={<Icon name="search" color="#86939e" />}
-              rightIcon={
-                <Icon
-                  name="close"
-                  color="#86939e"
-                  onPress={handleSearchBarCancel}
-                />
-              }
+              data={suggestions}
+              flatListProps={{
+                keyboardShouldPersistTaps: 'handled',
+                keyExtractor: (_, idx) => idx,
+                renderItem: ({ item }) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setSearchQuery(item.companyname);
+                      setSelectedBarCoordinate({
+                        latitude: item.location.coordinates[0],
+                        longitude: item.location.coordinates[1],
+                        latitudeDelta: 0.0222,
+                        longitudeDelta: 0.0221,
+                      });
+                      setShowSearchBar(false);
+                      3;
+                    }}
+                  >
+                    <Text>{item.companyname}</Text>
+                  </TouchableOpacity>
+                ),
+              }}
             />
           </View>
         )}
@@ -117,8 +179,6 @@ export default function App() {
               latitude: bar.location.coordinates[0],
               longitude: bar.location.coordinates[1],
             }}
-            title={bar.companyname}
-            description={bar.bio}
             onPress={() => {
               setSelectedBarCoordinate({
                 latitude: bar.location.coordinates[0],
@@ -126,6 +186,8 @@ export default function App() {
                 latitudeDelta: 0.0222,
                 longitudeDelta: 0.0221,
               });
+              setSearchQuery(bar.companyname); // set search query to bar's name
+              setShowSearchBar(false);
             }}
           />
         ))}
@@ -146,6 +208,7 @@ const styles = StyleSheet.create({
   },
   searchBarContainer: {
     backgroundColor: '#fff',
+    height: 100,
   },
   searchBarInputContainer: {
     backgroundColor: 'green',
