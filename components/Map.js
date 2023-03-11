@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
+import BarMarker from './BarMarker';
+
 const Map = ({ region, bars, selectedBarCoordinate }) => {
   const [currentLocation, setCurrentLocation] = useState(null);
 
@@ -24,34 +26,13 @@ const Map = ({ region, bars, selectedBarCoordinate }) => {
   }, []);
 
   return (
-    <MapView
-      style={styles.map}
-      region={selectedBarCoordinate || currentLocation || region}
-    >
+    <MapView style={styles.map} region={selectedBarCoordinate || region}>
       <Marker
         coordinate={region}
-        title={'Marker Title'}
-        description={'Marker Description'}
+        title={'your location'}
+        description={'go to your nearest bar and get a drink!'}
       />
-      {bars.map((bar) => (
-        <Marker
-          key={bar._id}
-          coordinate={{
-            latitude: bar.location.coordinates[0],
-            longitude: bar.location.coordinates[1],
-          }}
-          title={bar.companyname}
-          description={bar.bio}
-          onPress={() => {
-            setSelectedBarCoordinate({
-              latitude: bar.location.coordinates[0],
-              longitude: bar.location.coordinates[1],
-              latitudeDelta: 0.0222,
-              longitudeDelta: 0.0221,
-            });
-          }}
-        />
-      ))}
+      <BarMarker />
     </MapView>
   );
 };

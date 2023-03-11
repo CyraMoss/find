@@ -13,8 +13,9 @@ import { Feather } from '@expo/vector-icons';
 
 import MapView, { Marker } from 'react-native-maps';
 import * as Permissions from 'expo-permissions';
-
 import * as Location from 'expo-location';
+
+import HeaderComponent from './components/Header';
 
 export default function App() {
   const [region, setRegion] = useState(null); // set initial region to null
@@ -102,71 +103,20 @@ export default function App() {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Header
-          containerStyle={styles.header}
-          leftComponent={{ icon: 'menu', color: '#fff' }}
-          centerComponent={{
-            text: 'Find Places to go!',
-            style: { color: '#fff' },
-          }}
-          rightComponent={
-            <>
-              {showSearchBar ? (
-                <Icon
-                  name="x"
-                  type="feather"
-                  color="#fff"
-                  onPress={handleClearIconPress}
-                />
-              ) : (
-                <Icon
-                  name="search"
-                  color="#fff"
-                  onPress={handleSearchIconPress}
-                />
-              )}
-            </>
-          }
+        <HeaderComponent
+          showSearchBar={showSearchBar}
+          handleSearchIconPress={handleSearchIconPress}
+          handleClearIconPress={handleClearIconPress}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          handleSearchBarCancel={handleSearchBarCancel}
+          handleSearch={handleSearch}
+          setSuggestions={setSuggestions}
+          suggestions={suggestions}
+          setSearchTerm={setSearchTerm}
+          searchTerm={searchTerm}
+          setSelectedBarCoordinate={setSelectedBarCoordinate}
         />
-        {showSearchBar && (
-          <View style={styles.searchBarContainer}>
-            <Autocomplete
-              placeholder="Search for your next drink spot!"
-              value={searchQuery}
-              onChangeText={(text) => {
-                setSearchQuery(text);
-                setSearchTerm(text);
-              }}
-              onSubmitEditing={handleSearch}
-              autoFocus={true}
-              containerStyle={styles.searchBarInputContainer}
-              inputContainerStyle={styles.searchBarInput}
-              data={suggestions}
-              flatListProps={{
-                keyExtractor: (item, index) => index.toString(),
-                keyboardShouldPersistTaps: 'always',
-                keyExtractor: (_, idx) => idx,
-                renderItem: ({ item }) => (
-                  <TouchableOpacity
-                    onPress={() => {
-                      setSearchQuery(item.companyname);
-                      setSelectedBarCoordinate({
-                        latitude: item.location.coordinates[0],
-                        longitude: item.location.coordinates[1],
-                        latitudeDelta: 0.0222,
-                        longitudeDelta: 0.0221,
-                      });
-                      setShowSearchBar(false);
-                      3;
-                    }}
-                  >
-                    <Text>{item.companyname}</Text>
-                  </TouchableOpacity>
-                ),
-              }}
-            />
-          </View>
-        )}
       </View>
       <MapView style={styles.map} region={selectedBarCoordinate || region}>
         <Marker
