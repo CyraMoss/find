@@ -7,7 +7,6 @@ export default function SearchBar(props) {
   const {
     searchQuery,
     setSearchQuery,
-    handleSearchBarCancel,
     setSearchTerm,
     searchTerm,
     setSuggestions,
@@ -28,6 +27,10 @@ export default function SearchBar(props) {
       setSuggestions([]);
     }
   }, [searchTerm]);
+
+  const handleSearchBarCancel = () => {
+    setShowSearchBar(false); // hide the search bar
+  };
 
   const handleSearch = () => {
     fetch(`http://192.168.1.108:3001/api/bars?q=${searchQuery}`)

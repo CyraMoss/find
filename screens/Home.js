@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  StatusBar,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+} from 'react-native';
+import { Header, Icon, Input } from 'react-native-elements';
+import Autocomplete from 'react-native-autocomplete-input';
+import { Feather } from '@expo/vector-icons';
 
-import Map from '../components/Map';
+import * as Permissions from 'expo-permissions';
+import * as Location from 'expo-location';
+
+import HeaderComponent from '../components/Header';
 import SearchBar from '../components/SearchBar';
-import Header from '../components/Header';
-
-import { fetchBars } from '../services/api';
+import BarMap from '../components/Map';
 
 export default function Home() {
+  const [region, setRegion] = useState(null); // set initial region to null
+  const [bars, setBars] = useState([]);
   const [showSearchBar, setShowSearchBar] = useState(false); // add state for search bar visibility
   const [searchQuery, setSearchQuery] = useState('');
-  const [bars, setBars] = useState([]);
-  const [region, setRegion] = useState(null); // set initial region to null
+  const [searchTerm, setSearchTerm] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+  const [showClearIcon, setShowClearIcon] = useState(false);
 
-  const handleSearch = async (query) => {
-    try {
-      const data = await fetchBars(query);
-      setBars(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [selectedBarCoordinate, setSelectedBarCoordinate] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -45,31 +52,64 @@ export default function Home() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (searchTerm) {
+      fetch(`http://192.168.1.108:3001/api/bars?q=${searchTerm}`)
+        .then((response) => response.json())
+        .then((data) => setSuggestions(data))
+        .catch((error) => console.error(error));
+    } else {
+      setSuggestions([]);
+    }
+  }, [searchTerm]);
+
   // render the map only after the region state is set
   if (!region) {
     return null;
   }
 
-  const handleSearchIconPress = () => {
-    setShowSearchBar(true); // show the search bar
-  };
-
-  const handleSearchBarCancel = () => {
-    setShowSearchBar(false); // hide the search bar
-  };
-
   return (
-    <View>
-      <Header handleSearchIconPress={handleSearchIconPress} />
-      {showSearchBar && (
-        <SearchBar
-          searchQuery={searchQuery}
+    <View style={styles.container}>
+      <View>
+        <HeaderComponent
+          showSearchBar={showSearchBar}
           setSearchQuery={setSearchQuery}
-          handleSearchBarCancel={handleSearchBarCancel}
-          onSearch={handleSearch}
+          setSearchTerm={setSearchTerm}
+          setShowSearchBar={setShowSearchBar}
+          setShowClearIcon={setShowClearIcon}
         />
-      )}
-      <Map bars={bars} />
+        {showSearchBar && (
+          <View style={styles.searchBarContainer}>
+            <SearchBar
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              setSearchTerm={setSearchTerm}
+              searchTerm={searchTerm}
+              setSuggestions={setSuggestions}
+              suggestions={suggestions}
+              setSelectedBarCoordinate={setSelectedBarCoordinate}
+              setBars={setBars}
+            />
+          </View>
+        )}
+      </View>
+      <BarMap
+        bars={bars}
+        setSelectedBarCoordinate={setSelectedBarCoordinate}
+        setSearchQuery={setSearchQuery}
+        setShowSearchBar={setShowSearchBar}
+        region={region}
+        selectedBarCoordinate={selectedBarCoordinate}
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    flex: 1,
+  },
+});

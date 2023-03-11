@@ -4,26 +4,15 @@ import * as Location from 'expo-location';
 
 import BarMarker from './BarMarker';
 
-const Map = ({ region, bars, selectedBarCoordinate }) => {
-  const [currentLocation, setCurrentLocation] = useState(null);
-
-  useEffect(() => {
-    const getLocationAsync = async () => {
-      try {
-        await Location.requestForegroundPermissionsAsync();
-        const location = await Location.getCurrentPositionAsync({});
-        setCurrentLocation({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: 0.0222,
-          longitudeDelta: 0.0221,
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getLocationAsync();
-  }, []);
+export default function BarMap(props) {
+  const {
+    bars,
+    setSelectedBarCoordinate,
+    setSearchQuery,
+    setShowSearchBar,
+    region,
+    selectedBarCoordinate,
+  } = props;
 
   return (
     <MapView style={styles.map} region={selectedBarCoordinate || region}>
@@ -32,15 +21,21 @@ const Map = ({ region, bars, selectedBarCoordinate }) => {
         title={'your location'}
         description={'go to your nearest bar and get a drink!'}
       />
-      <BarMarker />
+      {bars.map((bar) => (
+        <BarMarker
+          key={bar._id}
+          bar={bar}
+          setSelectedBarCoordinate={setSelectedBarCoordinate}
+          setSearchQuery={setSearchQuery}
+          setShowSearchBar={setShowSearchBar}
+        />
+      ))}
     </MapView>
   );
-};
+}
 
 const styles = {
   map: {
     flex: 1,
   },
 };
-
-export default Map;
