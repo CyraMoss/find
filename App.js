@@ -5,6 +5,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Text,
+  ScrollView,
 } from 'react-native';
 import { Header, Icon, Input } from 'react-native-elements';
 import Autocomplete from 'react-native-autocomplete-input';
@@ -142,7 +143,8 @@ export default function App() {
               inputContainerStyle={styles.searchBarInput}
               data={suggestions}
               flatListProps={{
-                keyboardShouldPersistTaps: 'handled',
+                keyExtractor: (item, index) => index.toString(),
+                keyboardShouldPersistTaps: 'always',
                 keyExtractor: (_, idx) => idx,
                 renderItem: ({ item }) => (
                   <TouchableOpacity
@@ -169,8 +171,8 @@ export default function App() {
       <MapView style={styles.map} region={selectedBarCoordinate || region}>
         <Marker
           coordinate={region}
-          title={'Marker Title'}
-          description={'Marker Description'}
+          title={'your location'}
+          description={'go to your nearest bar and get a drink!'}
         />
         {bars.map((bar) => (
           <Marker
@@ -179,6 +181,8 @@ export default function App() {
               latitude: bar.location.coordinates[0],
               longitude: bar.location.coordinates[1],
             }}
+            title={bar.companyname}
+            description={bar.bio}
             onPress={() => {
               setSelectedBarCoordinate({
                 latitude: bar.location.coordinates[0],
