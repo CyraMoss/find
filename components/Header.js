@@ -7,14 +7,16 @@ import {
 } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import React, { useEffect } from 'react';
-
 import Autocomplete from 'react-native-autocomplete-input';
+
+import SearchBar from './SearchBar';
 
 export default function HeaderComponent(props) {
   const {
     showSearchBar,
     handleSearchIconPress,
-    handleClearIconPress,
+    setShowClearIcon,
+    setShowSearchBar,
     searchQuery,
     setSearchQuery,
     handleSearchBarCancel,
@@ -24,22 +26,15 @@ export default function HeaderComponent(props) {
     searchTerm,
     setSearchTerm,
     setSelectedBarCoordinate,
+    setBars,
   } = props;
 
-  useEffect(() => {
-    if (searchTerm) {
-      fetch(`http://192.168.1.108:3001/api/bars?q=${searchTerm}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setSuggestions(data);
-          console.log(Array.isArray(data)); // check if data is an array
-          console.log(data); // log the contents of data
-        })
-        .catch((error) => console.error(error));
-    } else {
-      setSuggestions([]);
-    }
-  }, [searchTerm]);
+  const handleClearIconPress = () => {
+    setSearchQuery('');
+    setSearchTerm('');
+    setShowClearIcon(false);
+    setShowSearchBar(false);
+  };
 
   return (
     <View style={{ marginTop: StatusBar.currentHeight + 32 }}>
@@ -75,37 +70,17 @@ export default function HeaderComponent(props) {
 
       {showSearchBar && (
         <View style={styles.searchBarContainer}>
-          <Autocomplete
-            placeholder="Search for your next drink spot"
-            value={searchQuery}
-            onChangeText={(text) => {
-              setSearchQuery(text);
-              setSearchTerm(text);
-            }}
-            onSubmitEditing={handleSearch}
-            autoFocus={true}
-            containerStyle={styles.searchBarInputContainer}
-            inputContainerStyle={styles.searchBarInput}
-            data={suggestions}
-            flatListProps={{
-              keyExtractor: (item, index) => index.toString(),
-              keyboardShouldPersistTaps: 'always',
-              renderItem: ({ item }) => (
-                <TouchableOpacity
-                  onPress={() => {
-                    setSearchQuery(item.companyname);
-                    setSelectedBarCoordinate({
-                      latitude: item.location.coordinates[0],
-                      longitude: item.location.coordinates[1],
-                      latitudeDelta: 0.0222,
-                      longitudeDelta: 0.0221,
-                    });
-                  }}
-                >
-                  <Text>{item.companyname}</Text>
-                </TouchableOpacity>
-              ),
-            }}
+          <SearchBar
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            handleSearch={handleSearch}
+            handleSearchBarCancel={handleSearchBarCancel}
+            setSearchTerm={setSearchTerm}
+            searchTerm={searchTerm}
+            setSuggestions={setSuggestions}
+            suggestions={suggestions}
+            setSelectedBarCoordinate={setSelectedBarCoordinate}
+            setBars={setBars}
           />
         </View>
       )}

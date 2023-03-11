@@ -37,30 +37,6 @@ export default function App() {
     setShowSearchBar(false); // hide the search bar
   };
 
-  const handleSearch = () => {
-    fetch(`http://192.168.1.108:3001/api/bars?q=${searchQuery}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setBars(data);
-        if (data.length > 0) {
-          setSelectedBarCoordinate({
-            latitude: data[0].location.coordinates[0],
-            longitude: data[0].location.coordinates[1],
-            latitudeDelta: 0.0012,
-            longitudeDelta: 0.0021,
-          });
-        }
-      })
-      .catch((error) => console.error(error));
-  };
-
-  const handleClearIconPress = () => {
-    setSearchQuery('');
-    setSearchTerm('');
-    setShowClearIcon(false);
-    setShowSearchBar(false);
-  };
-
   useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -102,20 +78,21 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.headerContainer}>
+      <View>
         <HeaderComponent
           showSearchBar={showSearchBar}
           handleSearchIconPress={handleSearchIconPress}
-          handleClearIconPress={handleClearIconPress}
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           handleSearchBarCancel={handleSearchBarCancel}
-          handleSearch={handleSearch}
           setSuggestions={setSuggestions}
           suggestions={suggestions}
           setSearchTerm={setSearchTerm}
           searchTerm={searchTerm}
           setSelectedBarCoordinate={setSelectedBarCoordinate}
+          setShowSearchBar={setShowSearchBar}
+          setShowClearIcon={setShowClearIcon}
+          setBars={setBars}
         />
       </View>
       <MapView style={styles.map} region={selectedBarCoordinate || region}>
@@ -154,25 +131,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  headerContainer: {
-    marginTop: StatusBar.currentHeight + 32, // move the header up
-  },
   map: {
     flex: 1,
-  },
-  searchBarContainer: {
-    backgroundColor: '#fff',
-    height: 100,
-  },
-  searchBarInputContainer: {
-    backgroundColor: 'green',
-    borderRadius: 5,
-  },
-  searchBarInput: {
-    borderBottomWidth: 0,
-  },
-  header: {
-    backgroundColor: '#f4511e',
-    justifyContent: 'space-around',
   },
 });
