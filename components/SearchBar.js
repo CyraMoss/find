@@ -13,7 +13,10 @@ export default function SearchBar(props) {
     suggestions,
     setSelectedBarCoordinate,
     setBars,
+    setShowSearchBar,
   } = props;
+
+  const [suggestionsHeight, setSuggestionsHeight] = useState(0);
 
   useEffect(() => {
     if (searchTerm) {
@@ -21,10 +24,12 @@ export default function SearchBar(props) {
         .then((response) => response.json())
         .then((data) => {
           setSuggestions(data);
+          setSuggestionsHeight(data.length * 40);
         })
         .catch((error) => console.error(error));
     } else {
       setSuggestions([]);
+      setSuggestionsHeight(0);
     }
   }, [searchTerm]);
 
@@ -45,12 +50,15 @@ export default function SearchBar(props) {
             longitudeDelta: 0.0021,
           });
         }
+        handleSearchBarCancel();
       })
       .catch((error) => console.error(error));
   };
 
   return (
-    <View style={styles.searchBarContainer}>
+    <View
+      style={[styles.searchBarContainer, { height: 50 + suggestionsHeight }]}
+    >
       <Autocomplete
         placeholder="Search for your next drink spot"
         value={searchQuery}
@@ -78,7 +86,14 @@ export default function SearchBar(props) {
                 });
               }}
             >
-              <Text>{item.companyname}</Text>
+              <View style={styles.suggestionItem}>
+                <Text style={styles.companyName}>{item.companyname}</Text>
+                <Text style={styles.address}>
+                  {item.location.streetnumber} {item.location.streetname},{' '}
+                  {item.location.suburb}, {item.location.city}{' '}
+                  {item.location.postcode}
+                </Text>
+              </View>
             </TouchableOpacity>
           ),
         }}
@@ -93,7 +108,27 @@ const styles = {
     height: 100,
   },
   searchBarInput: {
-    borderBottomWidth: 0,
     borderRadius: 5,
+  },
+  searchBarInputContainer: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    zIndex: 999,
+  },
+  suggestionItem: {
+    height: 40,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+  },
+  companyName: {
+    fontWeight: 'bold',
+  },
+  address: {
+    color: '#888',
   },
 };

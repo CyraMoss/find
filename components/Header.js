@@ -1,6 +1,7 @@
 import { View, StatusBar, StyleSheet } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import React, { useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 export default function HeaderComponent(props) {
   const {
@@ -9,6 +10,7 @@ export default function HeaderComponent(props) {
     setShowSearchBar,
     setSearchTerm,
     setSearchQuery,
+    navigation,
   } = props;
 
   const handleClearIconPress = () => {
@@ -23,6 +25,10 @@ export default function HeaderComponent(props) {
     setShowClearIcon(true); // show search icon or x icon
   };
 
+  const handleLoginPress = () => {
+    navigation.navigate('Login');
+  };
+
   return (
     <View style={{ marginTop: StatusBar.currentHeight + 32 }}>
       <Header
@@ -30,7 +36,7 @@ export default function HeaderComponent(props) {
           backgroundColor: '#f4511e',
           justifyContent: 'space-around',
         }}
-        leftComponent={{ icon: 'menu', color: '#fff' }}
+        leftComponent={{ icon: 'menu', onPress: () => navigation.openDrawer() }}
         centerComponent={{
           text: 'Find Places to go!',
           style: { color: '#fff' },

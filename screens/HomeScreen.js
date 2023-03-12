@@ -77,7 +77,6 @@ export default function Home() {
           setSearchTerm={setSearchTerm}
           setShowSearchBar={setShowSearchBar}
           setShowClearIcon={setShowClearIcon}
-          navigation={navigation}
         />
         {showSearchBar && (
           <View style={styles.searchBarContainer}>
