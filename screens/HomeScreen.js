@@ -10,6 +10,7 @@ import {
 import { Header, Icon, Input } from 'react-native-elements';
 import Autocomplete from 'react-native-autocomplete-input';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
@@ -18,7 +19,7 @@ import HeaderComponent from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import BarMap from '../components/Map';
 
-export default function Home() {
+export default function Home({ navigation }) {
   const [region, setRegion] = useState(null); // set initial region to null
   const [bars, setBars] = useState([]);
   const [showSearchBar, setShowSearchBar] = useState(false); // add state for search bar visibility

@@ -20,8 +20,8 @@ const BarMarker = ({
         setSelectedBarCoordinate({
           latitude: bar.location.coordinates[0],
           longitude: bar.location.coordinates[1],
-          latitudeDelta: 0.0222,
-          longitudeDelta: 0.0221,
+          latitudeDelta: 0.0022,
+          longitudeDelta: 0.0021,
         });
         setSearchQuery(bar.companyname);
         setShowSearchBar(false);

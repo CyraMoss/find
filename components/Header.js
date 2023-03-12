@@ -1,7 +1,9 @@
 import { View, StatusBar, StyleSheet } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
-import React, { useEffect } from 'react';
+import { Menu } from 'react-native-paper';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import LoginScreen from '../screens/LoginScreen';
 
 export default function HeaderComponent(props) {
   const {
@@ -10,8 +12,11 @@ export default function HeaderComponent(props) {
     setShowSearchBar,
     setSearchTerm,
     setSearchQuery,
-    navigation,
   } = props;
+
+  const navigation = useNavigation();
+
+  const [menuVisible, setMenuVisible] = useState(false);
 
   const handleClearIconPress = () => {
     setSearchQuery('');
@@ -25,18 +30,39 @@ export default function HeaderComponent(props) {
     setShowClearIcon(true); // show search icon or x icon
   };
 
+  const handleMenuIconPress = () => {
+    setMenuVisible(true);
+  };
+
+  const handleMenuClose = () => {
+    setMenuVisible(false);
+  };
+
   const handleLoginPress = () => {
     navigation.navigate('Login');
+    setMenuVisible(false);
+  };
+
+  const handleHomePress = () => {
+    navigation.navigate('Home');
+    setMenuVisible(false);
   };
 
   return (
-    <View style={{ marginTop: StatusBar.currentHeight + 32 }}>
+    <View>
       <Header
         containerStyle={{
-          backgroundColor: '#f4511e',
+          backgroundColor: 'black',
           justifyContent: 'space-around',
         }}
-        leftComponent={{ icon: 'menu', onPress: () => navigation.openDrawer() }}
+        leftComponent={
+          <Icon
+            name="menu"
+            type="feather"
+            color="#fff"
+            onPress={handleMenuIconPress}
+          />
+        }
         centerComponent={{
           text: 'Find Places to go!',
           style: { color: '#fff' },
@@ -44,12 +70,7 @@ export default function HeaderComponent(props) {
         rightComponent={
           <>
             {showSearchBar ? (
-              <Icon
-                name="x"
-                type="feather"
-                color="#fff"
-                onPress={handleClearIconPress}
-              />
+              <Icon name="x" color="#fff" onPress={handleClearIconPress} />
             ) : (
               <Icon
                 name="search"
@@ -60,6 +81,21 @@ export default function HeaderComponent(props) {
           </>
         }
       />
+      <Menu
+        visible={menuVisible}
+        onDismiss={handleMenuClose}
+        anchor={
+          <Icon
+            name="x"
+            type="feather"
+            color="#fff"
+            onPress={handleMenuIconPress}
+          />
+        }
+      >
+        <Menu.Item onPress={handleHomePress} title="Home" />
+        <Menu.Item onPress={handleLoginPress} title="Login" />
+      </Menu>
     </View>
   );
 }
