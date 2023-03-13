@@ -1,5 +1,6 @@
 import React from 'react';
 import { Marker } from 'react-native-maps';
+import { Image } from 'react-native';
 
 const BarMarker = ({
   bar,
@@ -26,7 +27,12 @@ const BarMarker = ({
         setSearchQuery(bar.companyname);
         setShowSearchBar(false);
       }}
-    />
+    >
+      <Image
+        source={{ uri: bar.profilepic }}
+        style={{ width: 50, height: 50, borderRadius: 25 }}
+      />
+    </Marker>
   );
 };
 

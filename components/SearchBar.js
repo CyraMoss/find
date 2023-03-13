@@ -1,5 +1,6 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import geolib from 'geolib';
 
 import Autocomplete from 'react-native-autocomplete-input';
 
@@ -14,6 +15,7 @@ export default function SearchBar(props) {
     setSelectedBarCoordinate,
     setBars,
     setShowSearchBar,
+    region,
   } = props;
 
   const [suggestionsHeight, setSuggestionsHeight] = useState(0);
@@ -32,6 +34,23 @@ export default function SearchBar(props) {
       setSuggestionsHeight(0);
     }
   }, [searchTerm]);
+
+  const handleDistanceCalculation = (barLocation) => {
+    const R = 6371; // earth radius in km
+    const dLat =
+      ((barLocation.coordinates[0] - region.latitude) * Math.PI) / 180;
+    const dLon =
+      ((barLocation.coordinates[1] - region.longitude) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((region.latitude * Math.PI) / 180) *
+        Math.cos((barLocation.coordinates[0] * Math.PI) / 180) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+    return distance.toFixed(2);
+  };
 
   const handleSuggestionPress = (item) => {
     const { coordinates } = item.location;
@@ -85,7 +104,7 @@ export default function SearchBar(props) {
         data={suggestions}
         flatListProps={{
           keyExtractor: (item, index) => index.toString(),
-          keyboardShouldPersistTaps: 'always',
+          keyboardShouldPersistTaps: 'handled',
           renderItem: ({ item }) => (
             <TouchableOpacity
               onPress={() => {
@@ -99,12 +118,24 @@ export default function SearchBar(props) {
               }}
             >
               <View style={styles.suggestionItem}>
-                <Text style={styles.companyName}>{item.companyname}</Text>
-                <Text style={styles.address}>
-                  {item.location.streetnumber} {item.location.streetname},{' '}
-                  {item.location.suburb}, {item.location.city}{' '}
-                  {item.location.postcode}
-                </Text>
+                <View style={styles.profilePictureContainer}>
+                  <Image
+                    source={{ uri: item.profilepic }} // Add the profile picture source here
+                    style={styles.profilePicture}
+                  />
+                </View>
+                <View style={styles.suggestionTextContainer}>
+                  <Text style={styles.companyName}>{item.companyname}</Text>
+                  <Text style={styles.address}>
+                    {item.location.streetnumber} {item.location.streetname},{' '}
+                    {item.location.suburb}, {item.location.city}
+                  </Text>
+                  {region && (
+                    <Text style={styles.distance}>
+                      {handleDistanceCalculation(item.location)} km away
+                    </Text>
+                  )}
+                </View>
               </View>
             </TouchableOpacity>
           ),
@@ -133,9 +164,35 @@ const styles = {
     zIndex: 999,
   },
   suggestionItem: {
-    height: 40,
+    height: 60,
     justifyContent: 'center',
     paddingHorizontal: 10,
+  },
+  companyName: {
+    fontWeight: 'bold',
+  },
+  address: {
+    color: '#888',
+  },
+  suggestionItem: {
+    height: 60,
+    flexDirection: 'row', // Use flexbox to display profile picture on the left and text on the right
+    alignItems: 'center', // Center the items vertically
+    paddingHorizontal: 10,
+  },
+  profilePictureContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginRight: 10,
+  },
+  profilePicture: {
+    width: 40,
+    height: 40,
+  },
+  suggestionTextContainer: {
+    flex: 1, // Use flexbox to expand the text container to fill the remaining space
   },
   companyName: {
     fontWeight: 'bold',

@@ -94,6 +94,7 @@ export default function Home({ navigation }) {
               setSelectedBarCoordinate={setSelectedBarCoordinate}
               setBars={setBars}
               setShowSearchBar={setShowSearchBar}
+              region={region}
             />
           </View>
         )}
