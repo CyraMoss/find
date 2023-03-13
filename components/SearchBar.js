@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import React, { useEffect, useState } from 'react';
+import { Avatar } from 'react-native-elements';
 import geolib from 'geolib';
 
 import Autocomplete from 'react-native-autocomplete-input';
@@ -26,7 +27,7 @@ export default function SearchBar(props) {
         .then((response) => response.json())
         .then((data) => {
           setSuggestions(data);
-          setSuggestionsHeight(data.length * 40);
+          setSuggestionsHeight(data.length * 60);
         })
         .catch((error) => console.error(error));
     } else {
@@ -119,9 +120,11 @@ export default function SearchBar(props) {
             >
               <View style={styles.suggestionItem}>
                 <View style={styles.profilePictureContainer}>
-                  <Image
+                  <Avatar
+                    size={40}
+                    rounded
                     source={{ uri: item.profilepic }} // Add the profile picture source here
-                    style={styles.profilePicture}
+                    key={item.companyname}
                   />
                 </View>
                 <View style={styles.suggestionTextContainer}>

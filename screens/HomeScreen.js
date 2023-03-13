@@ -103,6 +103,9 @@ export default function Home({ navigation }) {
             setBars={setBars}
             setShowFilterOptions={setShowFilterOptions}
             bars={bars}
+            setSearchQuery={setSearchQuery}
+            setSelectedBarCoordinate={setSelectedBarCoordinate}
+            setShowSearchBar={setShowSearchBar}
           />
         )}
       </View>

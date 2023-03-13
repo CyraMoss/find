@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Marker } from 'react-native-maps';
-import { Image } from 'react-native';
+import { Avatar, Text } from 'react-native-elements';
 
 const BarMarker = ({
   bar,
@@ -8,6 +8,25 @@ const BarMarker = ({
   setSearchQuery,
   setShowSearchBar,
 }) => {
+  const [showDescription, setShowDescription] = useState(false);
+
+  const handlePress = () => {
+    if (showDescription) {
+      setShowDescription(false);
+      setSearchQuery('');
+    } else {
+      setSelectedBarCoordinate({
+        latitude: bar.location.coordinates[0],
+        longitude: bar.location.coordinates[1],
+        latitudeDelta: 0.0022,
+        longitudeDelta: 0.0021,
+      });
+      setSearchQuery(bar.companyname);
+      setShowSearchBar(false);
+      setShowDescription(true);
+    }
+  };
+
   return (
     <Marker
       key={bar._id}
@@ -17,21 +36,25 @@ const BarMarker = ({
       }}
       title={bar.companyname}
       description={bar.bio}
-      onPress={() => {
-        setSelectedBarCoordinate({
-          latitude: bar.location.coordinates[0],
-          longitude: bar.location.coordinates[1],
-          latitudeDelta: 0.0022,
-          longitudeDelta: 0.0021,
-        });
-        setSearchQuery(bar.companyname);
-        setShowSearchBar(false);
-      }}
+      onPress={handlePress}
     >
-      <Image
-        source={{ uri: bar.profilepic }}
-        style={{ width: 50, height: 50, borderRadius: 25 }}
+      <Avatar
+        size={40}
+        rounded
+        source={{ uri: bar.profilepic }} // Add the profile picture source here
+        key={bar.companyname}
       />
+      {showDescription && (
+        <Text style={{ fontSize: 16 }}>
+          {bar.bio} {'\n'}
+          <Text
+            style={{ color: 'blue' }}
+            onPress={() => alert('Navigate to login page')}
+          >
+            Login to see more details
+          </Text>
+        </Text>
+      )}
     </Marker>
   );
 };
