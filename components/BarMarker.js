@@ -44,17 +44,7 @@ const BarMarker = ({
         source={{ uri: bar.profilepic }} // Add the profile picture source here
         key={bar.companyname}
       />
-      {showDescription && (
-        <Text style={{ fontSize: 16 }}>
-          {bar.bio} {'\n'}
-          <Text
-            style={{ color: 'blue' }}
-            onPress={() => alert('Navigate to login page')}
-          >
-            Login to see more details
-          </Text>
-        </Text>
-      )}
+      {showDescription && <Text style={{ fontSize: 16 }}>{bar.bio}</Text>}
     </Marker>
   );
 };
