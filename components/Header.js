@@ -12,6 +12,8 @@ export default function HeaderComponent(props) {
     setShowSearchBar,
     setSearchTerm,
     setSearchQuery,
+    setShowFilterOptions,
+    showFilterOptions,
   } = props;
 
   const navigation = useNavigation();
@@ -48,6 +50,12 @@ export default function HeaderComponent(props) {
     setMenuVisible(false);
   };
 
+  const handleFilterPress = () => {
+    navigation.navigate('Filter');
+    setShowClearIcon(false);
+    setShowSearchBar(false);
+  };
+
   return (
     <View>
       <Header
@@ -70,7 +78,24 @@ export default function HeaderComponent(props) {
         rightComponent={
           <>
             {showSearchBar ? (
-              <Icon name="x" color="#fff" onPress={handleClearIconPress} />
+              <>
+                <Icon
+                  name="close"
+                  color="#fff"
+                  onPress={() => {
+                    setShowSearchBar(!showSearchBar);
+                    setShowFilterOptions(false); // <-- add this line
+                  }}
+                />
+                <Icon
+                  name="filter-list"
+                  color="#fff"
+                  onPress={() => {
+                    setShowFilterOptions(!showFilterOptions); // <-- add this line
+                    setShowSearchBar(false);
+                  }}
+                />
+              </>
             ) : (
               <Icon
                 name="search"

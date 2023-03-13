@@ -1,12 +1,14 @@
-import { TouchableOpacity, View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
 
-import HeaderComponent from '../components/Header';
-
-export default function LoginScreen({ navigation }) {
+const LoginScreen = () => {
   return (
     <View>
-      <HeaderComponent />
+      <Text>LoginScreen</Text>
     </View>
   );
-}
+};
+
+export default LoginScreen;
+
+const styles = StyleSheet.create({});

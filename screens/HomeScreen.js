@@ -7,7 +7,7 @@ import {
   Text,
   ScrollView,
 } from 'react-native';
-import { Header, Icon, Input } from 'react-native-elements';
+import { Button, Header, Icon, Input } from 'react-native-elements';
 import Autocomplete from 'react-native-autocomplete-input';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +18,7 @@ import * as Location from 'expo-location';
 import HeaderComponent from '../components/Header';
 import SearchBar from '../components/SearchBar';
 import BarMap from '../components/Map';
+import FilterOptionsScreen from './FilterOptionsScreen';
 
 export default function Home({ navigation }) {
   const [region, setRegion] = useState(null); // set initial region to null
@@ -27,7 +28,7 @@ export default function Home({ navigation }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [showClearIcon, setShowClearIcon] = useState(false);
-
+  const [showFilterOptions, setShowFilterOptions] = useState(false);
   const [selectedBarCoordinate, setSelectedBarCoordinate] = useState(null);
 
   useEffect(() => {
@@ -78,6 +79,8 @@ export default function Home({ navigation }) {
           setSearchTerm={setSearchTerm}
           setShowSearchBar={setShowSearchBar}
           setShowClearIcon={setShowClearIcon}
+          setShowFilterOptions={setShowFilterOptions}
+          showFilterOptions={showFilterOptions}
         />
         {showSearchBar && (
           <View style={styles.searchBarContainer}>
@@ -93,6 +96,13 @@ export default function Home({ navigation }) {
               setShowSearchBar={setShowSearchBar}
             />
           </View>
+        )}
+        {showFilterOptions && (
+          <FilterOptionsScreen
+            setBars={setBars}
+            setShowFilterOptions={setShowFilterOptions}
+            bars={bars}
+          />
         )}
       </View>
       <BarMap

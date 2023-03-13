@@ -33,6 +33,18 @@ export default function SearchBar(props) {
     }
   }, [searchTerm]);
 
+  const handleSuggestionPress = (item) => {
+    const { coordinates } = item.location;
+    setSelectedBarCoordinate(coordinates);
+    // filter the bars based on the selected music type
+    const filteredBars = bars.filter((bar) =>
+      bar.musictype.includes(selectedMusicType)
+    );
+    setBars(filteredBars);
+    setSearchQuery(item.companyname);
+    setShowSearchBar(false);
+  };
+
   const handleSearchBarCancel = () => {
     setShowSearchBar(false); // hide the search bar
   };

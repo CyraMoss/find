@@ -5,6 +5,8 @@ import { Provider as PaperProvider } from 'react-native-paper';
 
 import Home from './screens/HomeScreen';
 import Login from './screens/LoginScreen';
+import Filter from './screens/FilterOptionsScreen';
+
 import HeaderComponent from './components/Header';
 
 const Stack = createStackNavigator();
@@ -26,6 +28,7 @@ function App() {
             })}
           />
           <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Filter" component={Filter} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
