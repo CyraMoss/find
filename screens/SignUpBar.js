@@ -30,7 +30,7 @@ const MUSIC_GENRES = [
   'Country',
   'Other',
 ];
-const CLUB_TYPES = ['Bar', 'Nightclub'];
+const CLUB_TYPES = ['bar', 'nightclub'];
 
 async function getCoordinates(address) {
   const apiKey = 'AIzaSyAN6V0dogqn0Kfa7CFwKRWj7Qd0xfvat28';
