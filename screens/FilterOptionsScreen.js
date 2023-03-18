@@ -218,6 +218,7 @@ const FilterOptionsScreen = (props) => {
 
         {bars.map((bar) => (
           <TouchableOpacity
+            key={bar._id}
             onPress={() => {
               setSearchQuery(bar.companyname);
               setSelectedBarCoordinate({

@@ -41,7 +41,7 @@ export default function HeaderComponent(props) {
   };
 
   const handleLoginPress = () => {
-    navigation.navigate('Login');
+    navigation.navigate('BarSignUp');
     setMenuVisible(false);
   };
 

@@ -7,6 +7,7 @@ const BarMarker = ({
   setSelectedBarCoordinate,
   setSearchQuery,
   setShowSearchBar,
+  setSelectedBar,
 }) => {
   const [showDescription, setShowDescription] = useState(false);
 
@@ -24,6 +25,7 @@ const BarMarker = ({
       setSearchQuery(bar.companyname);
       setShowSearchBar(false);
       setShowDescription(true);
+      setSelectedBar(bar);
     }
   };
 
@@ -31,21 +33,13 @@ const BarMarker = ({
     <Marker
       key={bar._id}
       coordinate={{
-        latitude: bar.location.coordinates[0],
-        longitude: bar.location.coordinates[1],
+        latitude: bar.location.coordinates[1],
+        longitude: bar.location.coordinates[0],
       }}
       title={bar.companyname}
       description={bar.bio}
       onPress={handlePress}
-    >
-      <Avatar
-        size={40}
-        rounded
-        source={{ uri: bar.profilepic }} // Add the profile picture source here
-        key={bar.companyname}
-      />
-      {showDescription && <Text style={{ fontSize: 16 }}>{bar.bio}</Text>}
-    </Marker>
+    ></Marker>
   );
 };
 

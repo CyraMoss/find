@@ -6,6 +6,7 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import Home from './screens/HomeScreen';
 import Login from './screens/LoginScreen';
 import Filter from './screens/FilterOptionsScreen';
+import BarSignUp from './screens/SignUpBar';
 
 import HeaderComponent from './components/Header';
 
@@ -29,6 +30,7 @@ function App() {
           />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Filter" component={Filter} />
+          <Stack.Screen name="BarSignUp" component={BarSignUp} />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
