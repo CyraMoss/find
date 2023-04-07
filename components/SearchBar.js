@@ -39,13 +39,13 @@ export default function SearchBar(props) {
   const handleDistanceCalculation = (barLocation) => {
     const R = 6371; // earth radius in km
     const dLat =
-      ((barLocation.coordinates[1] - region.latitude) * Math.PI) / 180;
+      ((barLocation.coordinates[0] - region.latitude) * Math.PI) / 180;
     const dLon =
-      ((barLocation.coordinates[0] - region.longitude) * Math.PI) / 180;
+      ((barLocation.coordinates[1] - region.longitude) * Math.PI) / 180;
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos((region.latitude * Math.PI) / 180) *
-        Math.cos((barLocation.coordinates[1] * Math.PI) / 180) *
+        Math.cos((barLocation.coordinates[0] * Math.PI) / 180) *
         Math.sin(dLon / 2) *
         Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
